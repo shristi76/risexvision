@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RISEXVISION - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --primary-dark: #3730a3;
+            --secondary-color: #06b6d4;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --dark-bg: #0f172a;
+            --card-bg: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --border-color: #334155;
+            --hover-bg: #2d3a4f;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #1a2635 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #60a5fa, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .navbar-menu {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .navbar-menu a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            font-size: 1.1rem;
+        }
+
+        .navbar-menu a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 5%;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 3rem 2rem !important;
+            margin-bottom: 3rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--text-primary), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px -1px rgba(67, 97, 238, 0.5);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Results Grid */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .result-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+            box-shadow: 0 20px 25px -5px rgba(67, 97, 238, 0.3);
+        }
+
+        .result-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .result-card p {
+            color: var(--text-secondary);
+            margin: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .result-card i {
+            width: 20px;
+            color: var(--primary-color);
+        }
+
+        /* Rating Badge */
+        .rating-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .rating-good {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 1px solid #10b981;
+        }
+
+        .rating-average {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+            border: 1px solid #f59e0b;
+        }
+
+        .rating-poor {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid #ef4444;
+        }
+
+        /* Loading Spinner */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid var(--border-color);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Alert */
+        .alert {
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--danger-color);
+            color: var(--danger-color);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--border-color);
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state p {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem 4%;
+            }
+
+            .navbar-brand {
+                font-size: 1.5rem;
+            }
+
+            .hero h2 {
+                font-size: 2rem;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar-menu {
+                gap: 1rem;
+            }
+
+            .hero {
+                padding: 2rem 1rem !important;
+            }
+
+            .hero h2 {
+                font-size: 1.8rem;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+    <title>RISEXVISION - Dashboard</title>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">RISEXVISION</div>
+        <div class="navbar-menu">
+            <a href="/">Home</a>
+            <a href="#" onclick="logout()">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="hero">
+            <h2>Your Dashboard</h2>
+            <p>View your resume analysis history and track your progress</p>
+            <button class="btn btn-primary" onclick="window.location.href='/'">
+                <i class="fas fa-plus"></i> New Analysis
+            </button>
+        </div>
+
+        <!-- Analysis History -->
+        <div id="historyContainer">
+            <div class="loading active" id="historyLoading">
+                <div class="spinner"></div>
+                <p>Loading your analysis history...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', loadHistory);
+
+        async function loadHistory() {
+            try {
+                const response = await fetch('/resume/history');
+                const data = await response.json();
+
+                document.getElementById('historyLoading').classList.remove('active');
+
+                if (data.length === 0) {
+                    document.getElementById('historyContainer').innerHTML += `
+                        <div class="empty-state">
+                            <i class="fas fa-file-alt"></i>
+                            <h3>No analyses yet</h3>
+                            <p>Upload your first resume to get started!</p>
+                            <button class="btn btn-primary" onclick="window.location.href='/'">
+                                Analyze Resume
+                            </button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const historyGrid = document.createElement('div');
+                historyGrid.className = 'results-grid';
+
+                data.forEach(analysis => {
+                    const date = new Date(analysis.createdAt).toLocaleDateString();
+                    historyGrid.innerHTML += `
+                        <div class="result-card">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                <h3>${analysis.originalFilename}</h3>
+                                <span class="rating-badge ${
+                                    analysis.analysis.rating >= 8 ? 'rating-good' : 
+                                    analysis.analysis.rating >= 5 ? 'rating-average' : 'rating-poor'
+                                }">${analysis.analysis.rating}/10</span>
+                            </div>
+                            <p><i class="fas fa-calendar"></i> ${date}</p>
+                            <p><i class="fas fa-check-circle" style="color: var(--success-color);"></i> 
+                                ${analysis.analysis.missingSkills?.length || 0} skills to add
+                            </p>
+                            <p><i class="fas fa-briefcase"></i> 
+                                ${analysis.jobRecommendations?.length || 0} job matches
+                            </p>
+                            <button class="btn btn-outline" style="width: 100%; margin-top: 1rem;" 
+                                    onclick="viewAnalysis('${analysis._id}')">
+                                View Details
+                            </button>
+                        </div>
+                    `;
+                });
+
+                document.getElementById('historyContainer').appendChild(historyGrid);
+
+            } catch (error) {
+                document.getElementById('historyContainer').innerHTML = `
+                    <div class="alert alert-error show">
+                        Failed to load history. Please try again.
+                    </div>
+                `;
+            }
+        }
+
+        function viewAnalysis(analysisId) {
+            localStorage.setItem('lastAnalysisId', analysisId);
+            window.location.href = '/results';
+        }
+
+        function logout() {
+            // Add your logout logic here
+            window.location.href = '/logout';
+        }
+    </script>
+</body>
+</html>

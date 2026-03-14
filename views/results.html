@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RISEXVISION - Analysis Results</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #1f2937;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            cursor: pointer;
+        }
+
+        .navbar-menu {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .navbar-menu a {
+            text-decoration: none;
+            color: #1f2937;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .navbar-menu a:hover {
+            color: #6366f1;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #6366f1;
+            color: #6366f1;
+        }
+
+        .btn-outline:hover {
+            background: #6366f1;
+            color: white;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            margin-top: 80px;
+        }
+
+        .hero {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            margin-bottom: 2rem;
+        }
+
+        .rating-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .rating-header h2 {
+            font-size: 2rem;
+            color: #1f2937;
+        }
+
+        .rating-badge {
+            display: inline-block;
+            padding: 0.75rem 2rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .rating-good {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+        }
+
+        .rating-average {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            color: white;
+        }
+
+        .rating-poor {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+            color: white;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .result-card h3 {
+            color: #6366f1;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+        }
+
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .skill-tag {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .job-card {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid #6366f1;
+            transition: transform 0.2s ease;
+        }
+
+        .job-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .job-header h4 {
+            color: #1f2937;
+            font-size: 1.1rem;
+        }
+
+        .company {
+            color: #6b7280;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .match-score {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .job-details {
+            display: flex;
+            gap: 1rem;
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+            color: #6b7280;
+            flex-wrap: wrap;
+        }
+
+        .job-details span {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .job-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #6366f1;
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: #e0e7ff;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .job-link:hover {
+            background: #6366f1;
+            color: white;
+        }
+
+        .suggestion-list {
+            list-style: none;
+        }
+
+        .suggestion-list li {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .suggestion-list li:before {
+            content: "💡";
+            font-size: 1.2rem;
+        }
+
+        .opportunity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .opportunity-card {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 1.2rem;
+            text-align: center;
+            transition: transform 0.3s ease;
+            border: 1px solid #e5e7eb;
+        }
+
+        .opportunity-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border-color: #6366f1;
+        }
+
+        .opportunity-card h4 {
+            color: #6366f1;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .opportunity-card p {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .opportunity-link {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .opportunity-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+        }
+
+        .relevance-badge {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            background: #10b981;
+            color: white;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            margin-top: 0.5rem;
+        }
+
+        .tab-container {
+            margin-top: 2rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .tab {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            color: #6b7280;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .tab.active {
+            color: #6366f1;
+            border-bottom: 2px solid #6366f1;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .salary {
+            color: #10b981;
+            font-weight: 600;
+        }
+
+        .source-badge {
+            background: #e5e7eb;
+            color: #4b5563;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+        }
+
+        @media (max-width: 768px) {
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .rating-header h2 {
+                font-size: 1.5rem;
+            }
+            
+            .rating-badge {
+                font-size: 1.2rem;
+                padding: 0.5rem 1rem;
+            }
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #6366f1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand" onclick="window.location.href='/'">RISEXVISION</div>
+        <div class="navbar-menu">
+            <a href="/dashboard">Dashboard</a>
+            <a href="#" onclick="logout()">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Loading your results...</p>
+        </div>
+
+        <div id="resultsContent" style="display: none;">
+            <!-- Score Overview -->
+            <div class="hero">
+                <div class="rating-header">
+                    <div>
+                        <h2>Resume Analysis Results</h2>
+                        <p id="suggestedTitles"></p>
+                    </div>
+                    <div class="rating-badge" id="ratingDisplay">0/10</div>
+                </div>
+            </div>
+
+            <!-- Tabs for different sections -->
+            <div class="tabs">
+                <div class="tab active" onclick="showTab('overview')">Overview</div>
+                <div class="tab" onclick="showTab('jobs')">Jobs</div>
+                <div class="tab" onclick="showTab('freelance')">Freelance</div>
+                <div class="tab" onclick="showTab('opensource')">Open Source</div>
+            </div>
+
+            <!-- Overview Tab -->
+            <div id="overview" class="tab-content active">
+                <div class="results-grid">
+                    <!-- Professional Summary -->
+                    <div class="result-card">
+                        <h3><i class="fas fa-user-tie"></i> Professional Summary</h3>
+                        <div id="professionalSummary" style="font-style: italic; color: #4b5563; line-height: 1.6; padding: 1rem 0;">
+                            Loading...
+                        </div>
+                    </div>
+
+                    <!-- Skills -->
+                    <div class="result-card">
+                        <h3><i class="fas fa-code"></i> Your Skills</h3>
+                        <div class="skills-container" id="skillsList">
+                            <!-- Skills will be populated here -->
+                        </div>
+                    </div>
+
+                    <!-- Improvement Suggestions -->
+                    <div class="result-card">
+                        <h3><i class="fas fa-lightbulb"></i> Suggestions</h3>
+                        <ul class="suggestion-list" id="suggestionsList">
+                            <!-- Suggestions will be populated here -->
+                        </ul>
+                    </div>
+
+                    <!-- Missing Skills -->
+                    <div class="result-card">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Skills to Add</h3>
+                        <div class="skills-container" id="missingSkillsList">
+                            <!-- Missing skills will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Jobs Tab -->
+            <div id="jobs" class="tab-content">
+                <div class="result-card">
+                    <h3><i class="fas fa-briefcase"></i> Top Job Matches</h3>
+                    <div id="jobOpenings">
+                        <!-- Job openings will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Freelance Tab -->
+            <div id="freelance" class="tab-content">
+                <div class="result-card">
+                    <h3><i class="fas fa-laptop"></i> Freelance Opportunities</h3>
+                    <div class="opportunity-grid" id="freelanceOpportunities">
+                        <!-- Freelance opportunities will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Open Source Tab -->
+            <div id="opensource" class="tab-content">
+                <div class="result-card">
+                    <h3><i class="fas fa-code-branch"></i> Open Source Projects</h3>
+                    <div class="opportunity-grid" id="openSourceProjects">
+                        <!-- Open source projects will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+                <button class="btn btn-primary" onclick="window.location.href='/'">
+                    <i class="fas fa-upload"></i> Analyze Another Resume
+                </button>
+                <button class="btn btn-outline" onclick="downloadReport()">
+                    <i class="fas fa-download"></i> Download Report
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let analysisData = null;
+
+        document.addEventListener('DOMContentLoaded', loadResults);
+
+        function showTab(tabName) {
+            // Update tab styling
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Show selected content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        async function loadResults() {
+            const resumeId = localStorage.getItem('lastAnalysisId');
+            if (!resumeId) {
+                window.location.href = '/';
+                return;
+            }
+
+            document.getElementById('loading').classList.add('active');
+
+            try {
+                const response = await fetch(`/resume/analysis/${resumeId}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    analysisData = data;
+                    displayResults(data);
+                    document.getElementById('loading').classList.remove('active');
+                    document.getElementById('resultsContent').style.display = 'block';
+                } else {
+                    showError('Failed to load results');
+                }
+            } catch (error) {
+                console.error('Error loading results:', error);
+                showError('Error loading results');
+            }
+        }
+
+        function displayResults(data) {
+            // Display rating
+            const ratingElement = document.getElementById('ratingDisplay');
+            ratingElement.textContent = `${data.analysis.rating || 7}/10`;
+            ratingElement.className = `rating-badge ${
+                (data.analysis.rating || 7) >= 8 ? 'rating-good' : 
+                (data.analysis.rating || 7) >= 5 ? 'rating-average' : 'rating-poor'
+            }`;
+
+            // Display suggested job titles
+            const suggestedTitles = document.getElementById('suggestedTitles');
+            if (data.analysis.suggestedJobTitles) {
+                suggestedTitles.innerHTML = `<strong>Recommended roles:</strong> ${data.analysis.suggestedJobTitles.join(' • ')}`;
+            }
+
+            // Display professional summary
+            document.getElementById('professionalSummary').textContent = 
+                data.analysis.professionalSummary || 'No summary available';
+
+            // Display skills
+            const skillsList = document.getElementById('skillsList');
+            skillsList.innerHTML = '';
+            (data.parsedContent.skills || data.analysis.skills || []).forEach(skill => {
+                skillsList.innerHTML += `<span class="skill-tag">${skill}</span>`;
+            });
+
+            // Display suggestions
+            const suggestionsList = document.getElementById('suggestionsList');
+            suggestionsList.innerHTML = '';
+            (data.analysis.suggestions || []).forEach(suggestion => {
+                suggestionsList.innerHTML += `<li>${suggestion}</li>`;
+            });
+
+            // Display missing skills
+            const missingSkillsList = document.getElementById('missingSkillsList');
+            missingSkillsList.innerHTML = '';
+            (data.analysis.missingSkills || []).forEach(skill => {
+                missingSkillsList.innerHTML += `<span class="skill-tag" style="background: linear-gradient(135deg, #ef4444, #f87171);">${skill}</span>`;
+            });
+
+            // Display job openings
+            const jobOpenings = document.getElementById('jobOpenings');
+            jobOpenings.innerHTML = '';
+            
+            const jobs = data.jobRecommendations || data.analysis.topJobs || [];
+            
+            if (jobs.length === 0) {
+                jobOpenings.innerHTML = '<p style="text-align: center; color: #6b7280;">No job matches found. Try adding more skills!</p>';
+            } else {
+                jobs.forEach(job => {
+                    const postedDate = job.postedDate ? new Date(job.postedDate).toLocaleDateString() : 'Recently';
+                    jobOpenings.innerHTML += `
+                        <div class="job-card">
+                            <div class="job-header">
+                                <h4>${job.title || 'Position'}</h4>
+                                <span class="match-score">${job.matchScore || 70}% Match</span>
+                            </div>
+                            <div class="company">
+                                <i class="fas fa-building"></i> ${job.company || 'Company'} 
+                                <span class="source-badge">${job.source || 'Job Board'}</span>
+                            </div>
+                            <div class="job-details">
+                                <span><i class="fas fa-map-marker-alt"></i> ${job.location || 'Remote'}</span>
+                                <span><i class="fas fa-calendar"></i> ${postedDate}</span>
+                                ${job.salary ? `<span class="salary"><i class="fas fa-money-bill-wave"></i> ${job.salary}</span>` : ''}
+                            </div>
+                            <div class="skills-container" style="margin: 0.5rem 0;">
+                                ${(job.tags || []).slice(0, 3).map(tag => `<span class="skill-tag" style="background: #e0e7ff; color: #6366f1;">${tag}</span>`).join('')}
+                            </div>
+                            <a href="${job.link}" target="_blank" class="job-link">
+                                <i class="fas fa-external-link-alt"></i> Apply Now
+                            </a>
+                        </div>
+                    `;
+                });
+            }
+
+            // Display freelance opportunities
+            const freelance = document.getElementById('freelanceOpportunities');
+            freelance.innerHTML = '';
+            
+            const freelanceOpps = data.freelanceSuggestions || [];
+            
+            freelanceOpps.forEach(opp => {
+                freelance.innerHTML += `
+                    <div class="opportunity-card">
+                        <h4>${opp.title || opp.opportunity}</h4>
+                        <p><i class="fas fa-globe"></i> ${opp.platform}</p>
+                        <p>${opp.description}</p>
+                        ${opp.relevanceScore ? `<span class="relevance-badge">${opp.relevanceScore}% Match</span>` : ''}
+                        <a href="${opp.link}" target="_blank" class="opportunity-link" style="margin-top: 1rem;">
+                            View Opportunities <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                `;
+            });
+
+            // Display open source projects
+            const openSource = document.getElementById('openSourceProjects');
+            openSource.innerHTML = '';
+            
+            const projects = data.openSourceSuggestions || [];
+            
+            projects.forEach(project => {
+                openSource.innerHTML += `
+                    <div class="opportunity-card">
+                        <h4>${project.name || project.project}</h4>
+                        <p><i class="fas fa-users"></i> ${project.organization}</p>
+                        <p>${project.description}</p>
+                        <div class="skills-container" style="justify-content: center;">
+                            ${(project.technologies || []).slice(0, 2).map(tech => `<span class="skill-tag" style="background: #e0e7ff; color: #6366f1; font-size: 0.7rem;">${tech}</span>`).join('')}
+                        </div>
+                        <span class="relevance-badge" style="background: ${project.difficulty === 'Beginner' ? '#10b981' : project.difficulty === 'Intermediate' ? '#f59e0b' : '#ef4444'}">
+                            ${project.difficulty || 'All Levels'}
+                        </span>
+                        <a href="${project.link}" target="_blank" class="opportunity-link" style="margin-top: 1rem;">
+                            Contribute Now <i class="fas fa-code-branch"></i>
+                        </a>
+                        ${project.issues ? `<br><small><a href="${project.issues}" target="_blank" style="color: #6366f1;">Good First Issues</a></small>` : ''}
+                    </div>
+                `;
+            });
+        }
+
+        function downloadReport() {
+            if (!analysisData) return;
+
+            const report = `
+RISEXVISION Resume Analysis Report
+===================================
+Date: ${new Date().toLocaleDateString()}
+
+RESUME SCORE: ${analysisData.analysis.rating || 7}/10
+
+PROFESSIONAL SUMMARY:
+${analysisData.analysis.professionalSummary || 'N/A'}
+
+KEY SKILLS:
+${(analysisData.parsedContent.skills || analysisData.analysis.skills || []).join(', ')}
+
+SUGGESTIONS FOR IMPROVEMENT:
+${(analysisData.analysis.suggestions || []).map(s => `• ${s}`).join('\n')}
+
+SKILLS TO ADD:
+${(analysisData.analysis.missingSkills || []).join(', ') || 'None identified'}
+
+RECOMMENDED JOB TITLES:
+${(analysisData.analysis.suggestedJobTitles || []).join(', ')}
+
+TOP JOB MATCHES:
+${(analysisData.jobRecommendations || analysisData.analysis.topJobs || []).slice(0, 3).map(job => `• ${job.title} at ${job.company} (${job.matchScore}% match)`).join('\n')}
+
+Generated by RISEXVISION - Your AI Resume Assistant
+            `;
+
+            // Create download link
+            const blob = new Blob([report], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `resume-analysis-${new Date().toISOString().split('T')[0]}.txt`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        function showError(message) {
+            document.getElementById('loading').classList.remove('active');
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-error show';
+            alert.style.cssText = 'background: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 12px; margin: 1rem 0;';
+            alert.textContent = message;
+            document.querySelector('.container').prepend(alert);
+        }
+
+        async function logout() {
+            try {
+                await fetch('/auth/logout', { method: 'POST' });
+                window.location.href = '/';
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        }
+    </script>
+</body>
+</html>

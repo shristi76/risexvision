@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RISEXVISION - AI Resume Analysis</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #020303 0%, #000000 100%);
+            min-height: 100vh;
+            color: #1f2937;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #6366f1, #030304);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+            cursor: pointer;
+        }
+
+        .navbar-menu {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .navbar-menu a {
+            text-decoration: none;
+            color: #1f2937;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .navbar-menu a:hover {
+            color: #6366f1;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #6366f1;
+            color: #6366f1;
+        }
+
+        .btn-outline:hover {
+            background: #6366f1;
+            color: white;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            margin-top: 80px;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            margin: 2rem 0;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #6b7280;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        /* Upload Section */
+        #upload-section {
+            margin-top: 2rem;
+        }
+
+        .job-input {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .job-input h3 {
+            color: #1f2937;
+            margin-bottom: 1rem;
+        }
+
+        .job-input input,
+        .job-input textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .job-input input:focus,
+        .job-input textarea:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .upload-area {
+            border: 3px dashed #6366f1;
+            border-radius: 30px;
+            padding: 3rem;
+            text-align: center;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            border-color: #8b5cf6;
+            background: rgba(255,255,255,0.2);
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            color: #6366f1;
+            margin-bottom: 1rem;
+        }
+
+        .upload-area h3 {
+            font-size: 1.5rem;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-area p {
+            color: #6b7280;
+        }
+
+        /* Results Grid */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            text-align: center;
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .result-card i {
+            font-size: 2.5rem;
+            color: #6366f1;
+            margin-bottom: 1rem;
+        }
+
+        .result-card h3 {
+            color: #1f2937;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .result-card p {
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #6366f1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 30px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #6b7280;
+        }
+
+        .close-modal:hover {
+            color: #1f2937;
+        }
+
+        .modal-content h2 {
+            color: #1f2937;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #1f2937;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        /* Alert Messages */
+        .alert {
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        /* Section Headers */
+        #features h2, #how-it-works h2 {
+            text-align: center;
+            color: white;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+            }
+            
+            .navbar-brand {
+                font-size: 1.5rem;
+            }
+            
+            .navbar-menu {
+                gap: 1rem;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero {
+                padding: 2rem 1rem;
+            }
+        }
+
+        .modal-content a {
+            color: #6366f1;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .modal-content a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-brand" onclick="window.location.href='/'">RISEXVISION</div>
+        <div class="navbar-menu">
+            <a onclick="document.getElementById('features').scrollIntoView({behavior: 'smooth'})">Features</a>
+            <a onclick="document.getElementById('how-it-works').scrollIntoView({behavior: 'smooth'})">How it Works</a>
+            <button class="btn btn-outline" onclick="showLoginModal()">Login</button>
+            <button class="btn btn-primary" onclick="showSignupModal()">Sign Up</button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>RISEXVISION</h1>
+            <p>Transform your resume with AI-powered analysis, job matching, and personalized recommendations</p>
+            <button class="btn btn-primary" onclick="showUploadSection()">
+                <i class="fas fa-upload"></i> Upload Your Resume
+            </button>
+        </section>
+
+        <!-- Upload Section (Initially Hidden) -->
+        <section id="upload-section" style="display: none;">
+            <!-- Job Target Input -->
+            <div class="job-input">
+                <h3><i class="fas fa-bullseye"></i> Target Your Dream Job</h3>
+                <input type="text" id="targetJob" placeholder="Enter target job title (e.g., Software Engineer)">
+                <textarea id="jobDescription" placeholder="Paste job description (optional)" rows="5"></textarea>
+            </div>
+
+            <!-- Upload Area -->
+            <div class="upload-area" onclick="document.getElementById('resumeInput').click()">
+                <input type="file" id="resumeInput" accept=".pdf" style="display: none;">
+                <div class="upload-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <h3>Drop your resume here or click to browse</h3>
+                <p>Supports PDF (Max 5MB)</p>
+            </div>
+        </section>
+
+        <!-- Loading Animation -->
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Analyzing your resume with AI...</p>
+        </div>
+
+        <!-- Features Section -->
+        <section id="features" style="margin-top: 4rem;">
+            <h2>Powerful Features</h2>
+            <div class="results-grid">
+                <div class="result-card">
+                    <i class="fas fa-robot"></i>
+                    <h3>AI-Powered Analysis</h3>
+                    <p>Get instant feedback on your resume with our advanced AI algorithms</p>
+                </div>
+                <div class="result-card">
+                    <i class="fas fa-briefcase"></i>
+                    <h3>Live Job Matches</h3>
+                    <p>Discover active job openings tailored to your skills</p>
+                </div>
+                <div class="result-card">
+                    <i class="fas fa-users"></i>
+                    <h3>Open Source Opportunities</h3>
+                    <p>Find projects to contribute and build your portfolio</p>
+                </div>
+                <div class="result-card">
+                    <i class="fas fa-laptop-code"></i>
+                    <h3>Freelance Gigs</h3>
+                    <p>Explore freelance opportunities that match your expertise</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- How it Works -->
+        <section id="how-it-works" style="margin-top: 4rem;">
+            <h2>How It Works</h2>
+            <div class="results-grid">
+                <div class="result-card">
+                    <h1 style="font-size: 3rem; color: #6366f1; margin-bottom: 1rem;">1</h1>
+                    <h3>Upload Resume</h3>
+                    <p>Simply upload your PDF resume</p>
+                </div>
+                <div class="result-card">
+                    <h1 style="font-size: 3rem; color: #6366f1; margin-bottom: 1rem;">2</h1>
+                    <h3>AI Analysis</h3>
+                    <p>Our AI analyzes your skills and experience</p>
+                </div>
+                <div class="result-card">
+                    <h1 style="font-size: 3rem; color: #6366f1; margin-bottom: 1rem;">3</h1>
+                    <h3>Get Recommendations</h3>
+                    <p>Receive personalized job matches and improvement suggestions</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="hideModal('loginModal')">&times;</span>
+            <h2>Login to RISEXVISION</h2>
+            <div class="alert" id="loginAlert"></div>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+            </form>
+            <p style="text-align: center; margin-top: 1rem;">
+                Don't have an account? <a href="#" onclick="switchToSignup()">Sign up</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div class="modal" id="signupModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="hideModal('signupModal')">&times;</span>
+            <h2>Create Account</h2>
+            <div class="alert" id="signupAlert"></div>
+            <form id="signupForm" onsubmit="handleSignup(event)">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="signupName" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="signupEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="signupPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Sign Up</button>
+            </form>
+            <p style="text-align: center; margin-top: 1rem;">
+                Already have an account? <a href="#" onclick="switchToLogin()">Login</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // ==================== MODAL FUNCTIONS ====================
+        function showLoginModal() {
+            document.getElementById('loginModal').classList.add('active');
+        }
+
+        function showSignupModal() {
+            document.getElementById('signupModal').classList.add('active');
+        }
+
+        function hideModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function switchToSignup() {
+            hideModal('loginModal');
+            showSignupModal();
+        }
+
+        function switchToLogin() {
+            hideModal('signupModal');
+            showLoginModal();
+        }
+
+        // ==================== AUTHENTICATION HANDLERS ====================
+        async function handleLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const alert = document.getElementById('loginAlert');
+
+            try {
+                const response = await fetch('/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert.className = 'alert alert-success show';
+                    alert.textContent = 'Login successful! Redirecting...';
+                    setTimeout(() => {
+                        hideModal('loginModal');
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    alert.className = 'alert alert-error show';
+                    alert.textContent = data.error || 'Login failed';
+                }
+            } catch (error) {
+                alert.className = 'alert alert-error show';
+                alert.textContent = 'Network error. Please try again.';
+            }
+        }
+
+        async function handleSignup(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const alert = document.getElementById('signupAlert');
+
+            try {
+                const response = await fetch('/auth/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert.className = 'alert alert-success show';
+                    alert.textContent = 'Account created! Redirecting to login...';
+                    setTimeout(() => {
+                        hideModal('signupModal');
+                        showLoginModal();
+                    }, 1500);
+                } else {
+                    alert.className = 'alert alert-error show';
+                    alert.textContent = data.error || 'Signup failed';
+                }
+            } catch (error) {
+                alert.className = 'alert alert-error show';
+                alert.textContent = 'Network error. Please try again.';
+            }
+        }
+
+        // ==================== UPLOAD SECTION ====================
+        function showUploadSection() {
+            document.getElementById('upload-section').style.display = 'block';
+            document.getElementById('upload-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // ==================== FILE UPLOAD HANDLER ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            const resumeInput = document.getElementById('resumeInput');
+            if (resumeInput) {
+                resumeInput.addEventListener('change', handleFileUpload);
+            }
+
+            // Drag and drop functionality
+            const uploadArea = document.querySelector('.upload-area');
+            if (uploadArea) {
+                setupDragAndDrop(uploadArea);
+            }
+
+            // Check login status
+            checkLoginStatus();
+        });
+
+        async function handleFileUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            // Check file type
+            if (file.type !== 'application/pdf') {
+                alert('Please upload a PDF file');
+                return;
+            }
+
+            // Check file size (5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                alert('File size should be less than 5MB');
+                return;
+            }
+
+            // Check if user is logged in
+            const userResponse = await fetch('/auth/me');
+            const userData = await userResponse.json();
+
+            if (!userData.loggedIn) {
+                alert('Please login to analyze your resume');
+                showLoginModal();
+                return;
+            }
+
+            // Show loading
+            document.getElementById('loading').classList.add('active');
+            document.getElementById('upload-section').style.opacity = '0.5';
+
+            // Prepare form data
+            const formData = new FormData();
+            formData.append('resume', file);
+            formData.append('targetJobTitle', document.getElementById('targetJob')?.value || '');
+            formData.append('jobDescription', document.getElementById('jobDescription')?.value || '');
+
+            try {
+                const response = await fetch('/resume/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Store analysis ID and redirect to results
+                    localStorage.setItem('lastAnalysisId', data.resumeId);
+                    window.location.href = '/results';
+                } else {
+                    alert(data.error || 'Failed to analyze resume');
+                    document.getElementById('loading').classList.remove('active');
+                    document.getElementById('upload-section').style.opacity = '1';
+                }
+            } catch (error) {
+                alert('Network error. Please try again.');
+                document.getElementById('loading').classList.remove('active');
+                document.getElementById('upload-section').style.opacity = '1';
+            }
+        }
+
+        // ==================== DRAG AND DROP ====================
+        function setupDragAndDrop(uploadArea) {
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, unhighlight, false);
+            });
+
+            function highlight() {
+                uploadArea.style.background = 'rgba(99, 102, 241, 0.1)';
+                uploadArea.style.borderColor = '#8b5cf6';
+            }
+
+            function unhighlight() {
+                uploadArea.style.background = '';
+                uploadArea.style.borderColor = '';
+            }
+
+            uploadArea.addEventListener('drop', handleDrop, false);
+
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const file = dt.files[0];
+                
+                if (file && file.type === 'application/pdf') {
+                    document.getElementById('resumeInput').files = dt.files;
+                    // Trigger change event
+                    const event = new Event('change', { bubbles: true });
+                    document.getElementById('resumeInput').dispatchEvent(event);
+                } else {
+                    alert('Please drop a PDF file');
+                }
+            }
+        }
+
+        // ==================== CHECK LOGIN STATUS ====================
+        async function checkLoginStatus() {
+            const response = await fetch('/auth/me');
+            const data = await response.json();
+
+            if (data.loggedIn) {
+                // Update navbar for logged in users
+                const navbar = document.querySelector('.navbar-menu');
+                if (navbar) {
+                    navbar.innerHTML = `
+                        <a onclick="document.getElementById('features').scrollIntoView({behavior: 'smooth'})">Features</a>
+                        <a onclick="document.getElementById('how-it-works').scrollIntoView({behavior: 'smooth'})">How it Works</a>
+                        <a href="/dashboard">Dashboard</a>
+                        <span style="color: #6366f1; font-weight: 500;">Welcome, ${data.name}!</span>
+                        <button class="btn btn-outline" onclick="logout()">Logout</button>
+                    `;
+                }
+            }
+        }
+
+        // ==================== LOGOUT ====================
+        async function logout() {
+            try {
+                await fetch('/auth/logout', { method: 'POST' });
+                window.location.reload();
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        }
+    </script>
+</body>
+</html>
