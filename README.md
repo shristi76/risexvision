@@ -1,6 +1,5 @@
 
 ---
-
 # RISEXVISION – AI Powered Resume Analysis Platform
 
 RISEXVISION is an AI-powered resume analysis platform that helps students and professionals improve their resumes and discover relevant career opportunities.
@@ -106,10 +105,7 @@ risexvision
 
 ---
 ## DEMO
-
----
-
-## ---
+https://drive.google.com/file/d/19PCcnhIH5KmuxBlESU-QxhY6VBM_jGvm/view?usp=sharing
 
 ---
 
