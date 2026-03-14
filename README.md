@@ -191,4 +191,3 @@ nodemon
 
 
 
-If you want, I can also help you add **GitHub badges, screenshots, demo GIFs, and a project banner** to make the README look **more professional and attractive for recruiters and hackathons**.
